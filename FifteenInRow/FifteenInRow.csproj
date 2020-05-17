@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="4.6.0.772" />
+    <PackageReference Include="Xamarin.Forms.PancakeView" Version="1.4.2" />
+    <PackageReference Include="Xamarin.HotReload" Version="2.0.7" />
+    <PackageReference Include="TouchView" Version="4.1.40" />
+    <PackageReference Include="XForms.Plugin.AnimationNavigationPage" Version="1.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="res\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="res\back.jpg" />
+    <None Remove="res\back.png" />
+    <None Remove="res\Mandalore-K77lD.otf" />
+    <None Remove="res\MandaloreHalftone-OVVBA.otf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="res\back.jpg">
+      <IncludeInPackage>false</IncludeInPackage>
+      <LogicalName>back.jpg</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="res\Mandalore-K77lD.otf" />
+    <EmbeddedResource Include="res\MandaloreHalftone-OVVBA.otf" />
+  </ItemGroup>
+</Project>
