@@ -61,6 +61,7 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignKey>iPhone Developer</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -128,5 +129,6 @@
     <BundleResource Include="Resources\backMusic.wav" />
     <BundleResource Include="Resources\click.mp3" />
     <BundleResource Include="Resources\swap.mp3" />
+    <BundleResource Include="Resources\back.png" />
   </ItemGroup>
 </Project>

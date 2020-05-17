@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FormsControls.Base;
 using TouchEffect;
 using Xamarin.Essentials;
@@ -14,7 +15,7 @@ namespace FifteenInRow
             var backImage = new Image
             {
                 Opacity = 0.98,
-                Source = ImageSource.FromResource("back.jpg", Application.Current.GetType().Assembly),
+                Source = "back",
                 Aspect = Aspect.Fill
             };
             AbsoluteLayout.SetLayoutBounds(backImage, new Rectangle(0, 0, 1, 1));
@@ -64,6 +65,7 @@ namespace FifteenInRow
 
             var buttonsView = new PancakeView
             {
+                Opacity = 0,
                 Margin = new Thickness(25, 0),
                 Padding = new Thickness(25, 10, 25, 20),
                 CornerRadius = new CornerRadius(50, 10, 10, 50),
@@ -99,6 +101,12 @@ namespace FifteenInRow
             };
 
             NavigationPage.SetHasNavigationBar(this, false);
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                Device.BeginInvokeOnMainThread(() => buttonsView.FadeTo(1, 1000, Easing.CubicInOut));
+            });
         }
 
         public IPageAnimation PageAnimation { get; } = Device.RuntimePlatform == Device.iOS

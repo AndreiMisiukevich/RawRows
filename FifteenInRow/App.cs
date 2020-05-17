@@ -9,9 +9,6 @@ namespace FifteenInRow
     {
         public App()
         {
-#if DEBUG
-            HotReloader.Current.Run(this);
-#endif
             MainPage = new AnimationNavigationPage(new MainMenuPage())
             {
                 BarTextColor = Color.White

@@ -16,7 +16,7 @@ namespace FifteenInRow
             var backImage = new Image
             {
                 Opacity = 0.98,
-                Source = ImageSource.FromResource("back.jpg", Application.Current.GetType().Assembly),
+                Source = "back",
                 Aspect = Aspect.Fill
             };
             AbsoluteLayout.SetLayoutBounds(backImage, new Rectangle(0, 0, 1, 1));

@@ -11,9 +11,8 @@ using TouchEffect.Android;
 
 namespace FifteenInRow.Droid
 {
-    [Activity(Label = "FifteenInRow",
+    [Activity(
         Theme = "@style/MainTheme",
-        MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -34,6 +33,20 @@ namespace FifteenInRow.Droid
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    [Activity(
+        Theme = "@style/SplashTheme",
+        MainLauncher = true,
+        NoHistory = true,
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    public class SplashActivity : Activity
+    {
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            StartActivity(typeof(MainActivity));
         }
     }
 }

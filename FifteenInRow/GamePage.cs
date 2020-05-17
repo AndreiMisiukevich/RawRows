@@ -104,7 +104,7 @@ namespace FifteenInRow
             var backImage = new Image
             {
                 Opacity = 0.98,
-                Source = ImageSource.FromResource("back.jpg", Application.Current.GetType().Assembly),
+                Source = "back",
                 Aspect = Aspect.Fill
             };
             AbsoluteLayout.SetLayoutBounds(backImage, new Rectangle(0, 0, 1, 1));
@@ -303,6 +303,8 @@ namespace FifteenInRow
                 (Content as AbsoluteLayout).Children.Add(popup);
                 popup.FadeTo(1, 350, Easing.CubicInOut);
                 popupView.ScaleTo(1, 500, Easing.CubicInOut);
+                if (Preferences.Get("ShouldPlaySound", true))
+                    Vibration.Vibrate(250);
             });
 
             this.SetBinding(PerformTransitionCommandProperty, nameof(GameViewModel.PerformTransitionCommand));

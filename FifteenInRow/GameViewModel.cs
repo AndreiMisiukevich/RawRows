@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -53,15 +54,56 @@ namespace FifteenInRow
         {
             var value = (int)p;
             var index = Numbers.IndexOf(value);
-            if(Math.Abs(index / MapSize - _emptyIndex / MapSize) + Math.Abs(index % MapSize - _emptyIndex % MapSize) != 1)
+
+            var currentRow = index / MapSize;
+            var currentCol = index % MapSize;
+
+            var emptyRow = _emptyIndex / MapSize;
+            var emptyCol = _emptyIndex % MapSize;
+
+            var transitions = new List<TransitionModel>();
+
+            if (currentRow == emptyRow)
+            {
+                var step = Math.Sign(emptyCol - currentCol);
+                var i = currentCol;
+                while (i != emptyCol)
+                {
+                    var from = currentRow * MapSize + i;
+                    i += step;
+                    var to = currentRow * MapSize + i;
+                    transitions.Insert(0, new TransitionModel(from, to, Numbers[from]));
+                }
+            }
+
+            if (currentCol == emptyCol)
+            {
+                var step = Math.Sign(emptyRow - currentRow);
+                var i = currentRow;
+                while (i != emptyRow)
+                {
+                    var from = i * MapSize + currentCol;
+                    i += step;
+                    var to = i * MapSize + currentCol;
+                    transitions.Insert(0, new TransitionModel(from, to, Numbers[from]));
+                }
+            }
+
+            if(!transitions.Any())
             {
                 return;
             }
-            PerformTransitionCommand?.Execute(new TransitionModel(index, _emptyIndex, Numbers[index]));
-            SwapElements(Numbers, index, _emptyIndex);
+
             _emptyIndex = index;
+
             if (Preferences.Get("ShouldPlaySound", true))
                 DependencyService.Resolve<IAudioService>().Play("swap.mp3", false);
+
+            foreach (var t in transitions)
+            {
+                PerformTransitionCommand?.Execute(t);
+                SwapElements(Numbers, t.FromIndex, t.ToIndex);
+            }
 
             ++SwapsCount;
             if (Numbers.Take(Numbers.Length - 1).SequenceEqual(_winSequence))
@@ -72,7 +114,10 @@ namespace FifteenInRow
 
         public ICommand InitGameCommand => _initGameCommand ?? (_initGameCommand = new Command(() =>
         {
-            Numbers = new int []{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 }; //ShuffleArray(GetEmptyMap());
+            Numbers = ShuffleArray(GetEmptyMap());
+#if DEBUG
+            Numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 };
+#endif
             _emptyIndex = Numbers.IndexOf(0);
             SwapsCount = 0;
         }));
