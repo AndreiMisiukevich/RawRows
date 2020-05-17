@@ -1,6 +1,7 @@
 ﻿using System;
 using FormsControls.Base;
 using TouchEffect;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PancakeView;
 
@@ -10,6 +11,8 @@ namespace FifteenInRow
     {
         public SettingsPage()
         {
+            BindingContext = new SettingsViewModel();
+
             var backImage = new Image
             {
                 Opacity = 0.98,
@@ -38,6 +41,7 @@ namespace FifteenInRow
                 HeightRequest = 2,
                 Rotation = 10
             };
+            musicCrossOne.SetBinding(IsVisibleProperty, nameof(SettingsViewModel.IsMusicDisabled));
             AbsoluteLayout.SetLayoutBounds(musicCrossOne, new Rectangle(0, .5, 1, 2));
             AbsoluteLayout.SetLayoutFlags(musicCrossOne, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
@@ -48,6 +52,7 @@ namespace FifteenInRow
                 HeightRequest = 2,
                 Rotation = -10
             };
+            musicCrossTwo.SetBinding(IsVisibleProperty, nameof(SettingsViewModel.IsMusicDisabled));
             AbsoluteLayout.SetLayoutBounds(musicCrossTwo, new Rectangle(0, .5, 1, 2));
             AbsoluteLayout.SetLayoutFlags(musicCrossTwo, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
@@ -68,7 +73,8 @@ namespace FifteenInRow
                     }
                 }
             };
-
+            musicLayout.SetBinding(TouchEff.CommandProperty, nameof(SettingsViewModel.ChangeSettingCommand));
+            TouchEff.SetCommandParameter(musicLayout, "music");
             TouchEff.SetNativeAnimation(musicLayout, true);
 
             var soundLabel = new Label
@@ -90,6 +96,7 @@ namespace FifteenInRow
                 HeightRequest = 2,
                 Rotation = 10
             };
+            soundCrossOne.SetBinding(IsVisibleProperty, nameof(SettingsViewModel.IsSoundDisabled));
             AbsoluteLayout.SetLayoutBounds(soundCrossOne, new Rectangle(0, .5, 1, 2));
             AbsoluteLayout.SetLayoutFlags(soundCrossOne, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
@@ -100,6 +107,7 @@ namespace FifteenInRow
                 HeightRequest = 2,
                 Rotation = -10
             };
+            soundCrossTwo.SetBinding(IsVisibleProperty, nameof(SettingsViewModel.IsSoundDisabled));
             AbsoluteLayout.SetLayoutBounds(soundCrossTwo, new Rectangle(0, .5, 1, 2));
             AbsoluteLayout.SetLayoutFlags(soundCrossTwo, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
@@ -119,6 +127,8 @@ namespace FifteenInRow
                     }
                 }
             };
+            soundLayout.SetBinding(TouchEff.CommandProperty, nameof(SettingsViewModel.ChangeSettingCommand));
+            TouchEff.SetCommandParameter(soundLayout, "sound");
             TouchEff.SetNativeAnimation(soundLayout, true);
 
             var buttonsView = new PancakeView
@@ -171,7 +181,8 @@ namespace FifteenInRow
             AbsoluteLayout.SetLayoutFlags(mainMenuButton, AbsoluteLayoutFlags.PositionProportional);
             TouchEff.SetCommand(mainMenuButton, new Command(() =>
             {
-                DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+                if (Preferences.Get("ShouldPlaySound", true))
+                    DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
                 Navigation.PopAsync();
             }));
             TouchEff.SetNativeAnimation(mainMenuButton, true);
@@ -189,7 +200,9 @@ namespace FifteenInRow
             NavigationPage.SetHasNavigationBar(this, false);
         }
 
-        public IPageAnimation PageAnimation { get; } = new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop };
+        public IPageAnimation PageAnimation { get; } = Device.RuntimePlatform == Device.iOS
+            ? new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop }
+            : (IPageAnimation)new LandingPageAnimation { Duration = AnimationDuration.Medium, Subtype = AnimationSubtype.FromTop };
 
         public void OnAnimationFinished(bool isPopAnimation) { }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using FormsControls.Base;
 using TouchEffect;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PancakeView;
 
@@ -100,7 +101,9 @@ namespace FifteenInRow
             NavigationPage.SetHasNavigationBar(this, false);
         }
 
-        public IPageAnimation PageAnimation { get; } = new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop };
+        public IPageAnimation PageAnimation { get; } = Device.RuntimePlatform == Device.iOS
+            ? new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop }
+            : (IPageAnimation)new LandingPageAnimation { Duration = AnimationDuration.Medium, Subtype = AnimationSubtype.FromTop };
 
         public void OnAnimationFinished(bool isPopAnimation) { }
 
@@ -108,13 +111,15 @@ namespace FifteenInRow
 
         private void OnSettingsClicked()
         {
-            DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+            if (Preferences.Get("ShouldPlaySound", true))
+                DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
             Navigation.PushAsync(new SettingsPage());
         }
 
         private void OnStartGameClicked()
         {
-            DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+            if (Preferences.Get("ShouldPlaySound", true))
+                DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
             Navigation.PushAsync(new GamePage
             {
                 BindingContext = new GameViewModel()

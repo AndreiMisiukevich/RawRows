@@ -1,5 +1,6 @@
 ﻿using System;
 using FormsControls.Base;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FifteenInRow
@@ -20,13 +21,15 @@ namespace FifteenInRow
         protected override void OnStart()
         {
             base.OnStart();
-            DependencyService.Resolve<IAudioService>().Play("backMusic.wav", true);
+            if (Preferences.Get("ShouldPlayMusic", true))
+                DependencyService.Resolve<IAudioService>().Play("backMusic.wav", true);
         }
 
         protected override void OnResume()
         {
             base.OnResume();
-            DependencyService.Resolve<IAudioService>().Play("backMusic.wav", true);
+            if (Preferences.Get("ShouldPlayMusic", true))
+                DependencyService.Resolve<IAudioService>().Play("backMusic.wav", true);
         }
 
         protected override void OnSleep()

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -46,6 +47,8 @@ namespace FifteenInRow
 
         public ICommand PerformTransitionCommand { get; set; }
 
+        public ICommand HandleWinCommand { get; set; }
+
         public ICommand SwapCommand => _swapCommand ?? (_swapCommand = new Command(p =>
         {
             var value = (int)p;
@@ -57,20 +60,19 @@ namespace FifteenInRow
             PerformTransitionCommand?.Execute(new TransitionModel(index, _emptyIndex, Numbers[index]));
             SwapElements(Numbers, index, _emptyIndex);
             _emptyIndex = index;
-            DependencyService.Resolve<IAudioService>().Play("swap.mp3", false);
+            if (Preferences.Get("ShouldPlaySound", true))
+                DependencyService.Resolve<IAudioService>().Play("swap.mp3", false);
 
             ++SwapsCount;
-            if (Numbers.Skip(1).SequenceEqual(_winSequence) ||
-                Numbers.Take(Numbers.Length - 1).SequenceEqual(_winSequence))
+            if (Numbers.Take(Numbers.Length - 1).SequenceEqual(_winSequence))
             {
-                // TODO: Handle Win
-                InitGameCommand.Execute(null);
+                HandleWinCommand?.Execute(SwapsCount);
             }
         }));
 
         public ICommand InitGameCommand => _initGameCommand ?? (_initGameCommand = new Command(() =>
         {
-            Numbers = ShuffleArray(GetEmptyMap());
+            Numbers = new int []{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 }; //ShuffleArray(GetEmptyMap());
             _emptyIndex = Numbers.IndexOf(0);
             SwapsCount = 0;
         }));

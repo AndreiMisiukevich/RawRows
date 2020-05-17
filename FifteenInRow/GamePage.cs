@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using FormsControls.Base;
 using TouchEffect;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PancakeView;
 
@@ -14,6 +15,7 @@ namespace FifteenInRow
         private const int SideMargin = 15;
 
         public static readonly BindableProperty PerformTransitionCommandProperty = BindableProperty.Create(nameof(PerformTransitionCommand), typeof(ICommand), typeof(GamePage), null, BindingMode.OneWayToSource);
+        public static readonly BindableProperty HandleWinCommandProperty = BindableProperty.Create(nameof(HandleWinCommand), typeof(ICommand), typeof(GamePage), null, BindingMode.OneWayToSource);
 
         private int _mapSize;
         private double _itemSize;
@@ -55,7 +57,8 @@ namespace FifteenInRow
             AbsoluteLayout.SetLayoutFlags(mainMenuButton, AbsoluteLayoutFlags.PositionProportional);
             TouchEff.SetCommand(mainMenuButton, new Command(() =>
             {
-                DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+                if (Preferences.Get("ShouldPlaySound", true))
+                    DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
                 Navigation.PopAsync();
             }));
             TouchEff.SetNativeAnimation(mainMenuButton, true);
@@ -86,7 +89,8 @@ namespace FifteenInRow
                 await Task.Delay(300);
                 TouchEff.SetCommand(newGameButton, new Command(async () =>
                 {
-                    DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+                    if (Preferences.Get("ShouldPlaySound", true))
+                        DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
                     await Navigation.PushAsync(new GamePage() { BindingContext = new GameViewModel() });
                     Navigation.RemovePage(this);
                 }));
@@ -203,7 +207,106 @@ namespace FifteenInRow
                 });
             });
 
+            HandleWinCommand = new Command(v =>
+            {
+                var okButton = new PancakeView
+                {
+                    Margin = new Thickness(0, 30, 0, 0),
+                    HeightRequest = 60,
+                    BorderColor = Color.White,
+                    BorderThickness = 2,
+                    Content = new Label
+                    {
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        VerticalTextAlignment = TextAlignment.Center,
+                        FontSize = 50,
+                        Text = "HOORAY!",
+                        TextColor = Color.White,
+                        FontFamily = "MandaloreRegular",
+                    }
+                };
+                TouchEff.SetPressedOpacity(okButton, 0.7);
+                TouchEff.SetPressedScale(okButton, 0.95);
+                TouchEff.SetCommand(okButton, new Command(async () =>
+                {
+                    if (Preferences.Get("ShouldPlaySound", true))
+                        DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+                    await Navigation.PushAsync(new GamePage() { BindingContext = new GameViewModel() });
+                    Navigation.RemovePage(this);
+                }));
+
+                var popupView = new PancakeView
+                {
+                    Scale = 0,
+                    Margin = new Thickness(25, 0),
+                    Padding = new Thickness(25, 10, 25, 20),
+                    CornerRadius = new CornerRadius(50, 10, 10, 50),
+                    BackgroundGradientStops = new GradientStopCollection
+                    {
+                        new GradientStop
+                        {
+                            Color = Color.FromRgb(41, 36, 88),
+                            Offset = .3f
+                        },
+                        new GradientStop
+                        {
+                            Color = Color.FromRgb(16, 15, 29),
+                            Offset = .7f
+                        },
+                        new GradientStop
+                        {
+                            Color = Color.Black,
+                            Offset = 1f
+                        }
+                    },
+                    BorderColor = Color.White,
+                    BorderThickness = 2,
+                    Content = new StackLayout
+                    {
+                        Spacing = 0,
+                        Children =
+                        {
+                            new Label
+                            {
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                FontSize = 50,
+                                Text = "CONGRATILATIONS!",
+                                TextColor = Color.White,
+                                FontFamily = "MandaloreHalftone",
+                            },
+                            new Label
+                            {
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                FontSize = 30,
+                                Text = $"YOUR SCORE IS: {v}",
+                                TextColor = Color.White,
+                                FontFamily = "MandaloreHalftone",
+                            },
+                            okButton
+                        }
+                    }
+                };
+                AbsoluteLayout.SetLayoutBounds(popupView, new Rectangle(.5, .5, 1, -1));
+                AbsoluteLayout.SetLayoutFlags(popupView, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
+
+                var popup = new AbsoluteLayout
+                {
+                    Opacity = 0,
+                    BackgroundColor = Color.Black.MultiplyAlpha(.85),
+                    Children =
+                    {
+                        popupView
+                    }
+                };
+                AbsoluteLayout.SetLayoutBounds(popup, new Rectangle(0, 0, 1, 1));
+                AbsoluteLayout.SetLayoutFlags(popup, AbsoluteLayoutFlags.All);
+                (Content as AbsoluteLayout).Children.Add(popup);
+                popup.FadeTo(1, 350, Easing.CubicInOut);
+                popupView.ScaleTo(1, 500, Easing.CubicInOut);
+            });
+
             this.SetBinding(PerformTransitionCommandProperty, nameof(GameViewModel.PerformTransitionCommand));
+            this.SetBinding(HandleWinCommandProperty, nameof(GameViewModel.HandleWinCommand));
 
             NavigationPage.SetHasNavigationBar(this, false);
         }
@@ -214,7 +317,15 @@ namespace FifteenInRow
             set => SetValue(PerformTransitionCommandProperty, value);
         }
 
-        public IPageAnimation PageAnimation { get; } = new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop };
+        public ICommand HandleWinCommand
+        {
+            get => (ICommand)GetValue(HandleWinCommandProperty);
+            set => SetValue(HandleWinCommandProperty, value);
+        }
+
+        public IPageAnimation PageAnimation { get; } = Device.RuntimePlatform == Device.iOS
+            ? new FlipPageAnimation { Duration = AnimationDuration.Long, Subtype = AnimationSubtype.FromTop }
+            : (IPageAnimation)new LandingPageAnimation { Duration = AnimationDuration.Medium, Subtype = AnimationSubtype.FromTop };
 
         public void OnAnimationFinished(bool isPopAnimation) { }
 
