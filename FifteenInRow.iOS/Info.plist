@@ -23,9 +23,9 @@
 	<key>CFBundleDisplayName</key>
 	<string>Raw Rows</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.test.FifteenInRow</string>
+	<string>com.sourcesoft.rawrows</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
