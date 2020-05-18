@@ -219,7 +219,7 @@ namespace FifteenInRow
                     {
                         HorizontalTextAlignment = TextAlignment.Center,
                         VerticalTextAlignment = TextAlignment.Center,
-                        FontSize = 50,
+                        FontSize = 40,
                         Text = "HOORAY!",
                         TextColor = Color.White,
                         FontFamily = "MandaloreRegular",
@@ -277,7 +277,7 @@ namespace FifteenInRow
                             new Label
                             {
                                 HorizontalTextAlignment = TextAlignment.Center,
-                                FontSize = 30,
+                                FontSize = 40,
                                 Text = $"YOUR SCORE IS: {v}",
                                 TextColor = Color.White,
                                 FontFamily = "MandaloreHalftone",

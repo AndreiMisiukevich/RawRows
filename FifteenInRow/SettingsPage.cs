@@ -26,7 +26,7 @@ namespace FifteenInRow
             {
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                FontSize = 50,
+                FontSize = 40,
                 Text = "MUSIC",
                 TextColor = Color.White,
                 FontFamily = "MandaloreRegular",
@@ -81,7 +81,7 @@ namespace FifteenInRow
             {
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.Center,
-                FontSize = 50,
+                FontSize = 40,
                 Text = "SOUND",
                 TextColor = Color.White,
                 FontFamily = "MandaloreRegular",
@@ -131,6 +131,59 @@ namespace FifteenInRow
             TouchEff.SetCommandParameter(soundLayout, "sound");
             TouchEff.SetNativeAnimation(soundLayout, true);
 
+
+            var decreaseMapSizeLayout = new PancakeView
+            {
+                HeightRequest = 60,
+                WidthRequest = 60,
+                BorderColor = Color.White,
+                BorderThickness = 2,
+                Content = new Label
+                {
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 50,
+                    Text = "-",
+                    TextColor = Color.White,
+                    FontFamily = "MandaloreRegular",
+                }
+            };
+            decreaseMapSizeLayout.SetBinding(TouchEff.CommandProperty, nameof(SettingsViewModel.ChangeSettingCommand));
+            TouchEff.SetCommandParameter(decreaseMapSizeLayout, "decreaseMapSize");
+            TouchEff.SetNativeAnimation(decreaseMapSizeLayout, true);
+
+            var increaseMapSizeLayout = new PancakeView
+            {
+                HeightRequest = 60,
+                WidthRequest = 60,
+                BorderColor = Color.White,
+                BorderThickness = 2,
+                Content = new Label
+                {
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    FontSize = 50,
+                    Text = "+",
+                    TextColor = Color.White,
+                    FontFamily = "MandaloreRegular",
+                }
+            };
+            increaseMapSizeLayout.SetBinding(TouchEff.CommandProperty, nameof(SettingsViewModel.ChangeSettingCommand));
+            TouchEff.SetCommandParameter(increaseMapSizeLayout, "increaseMapSize");
+            TouchEff.SetNativeAnimation(increaseMapSizeLayout, true);
+
+            var mapSizeLabel = new Label
+            {
+
+                HorizontalTextAlignment = TextAlignment.Center,
+                FontSize = 30,
+                TextColor = Color.White,
+                FontFamily = "MandaloreRegular",
+            };
+            mapSizeLabel.SetBinding(Label.TextProperty, nameof(SettingsViewModel.MapSizeText));
+
             var buttonsView = new PancakeView
             {
                 Margin = new Thickness(25, 0),
@@ -145,13 +198,44 @@ namespace FifteenInRow
                         new Label
                         {
                             HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
                             FontSize = 50,
                             Text = "SETTINGS",
                             TextColor = Color.White,
                             FontFamily = "MandaloreHalftone",
                         },
                         musicLayout,
-                        soundLayout
+                        soundLayout,
+                        new StackLayout
+                        {
+                            Margin = new Thickness(0, 15, 0, 0),
+                            Orientation = StackOrientation.Horizontal,
+                            Children = {
+
+                                decreaseMapSizeLayout,
+
+                                new StackLayout
+                                {
+                                    Spacing = 0,
+                                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                                    Children =
+                                    {
+                                        new Label
+                                        {
+                                            
+                                            HorizontalTextAlignment = TextAlignment.Center,
+                                            FontSize = 30,
+                                            Text = "MAP SIZE",
+                                            TextColor = Color.White,
+                                            FontFamily = "MandaloreRegular",
+                                        },
+                                        mapSizeLabel
+                                    }
+                                },
+
+                                increaseMapSizeLayout
+                            }
+                        }
                     }
                 }
             };

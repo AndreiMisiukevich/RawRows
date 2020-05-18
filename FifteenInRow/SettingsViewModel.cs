@@ -14,9 +14,13 @@ namespace FifteenInRow
         private ICommand _changeSettingCommand;
         private bool _isMusicDisabled = !Preferences.Get("ShouldPlayMusic", true);
         private bool _isSoundDisabled = !Preferences.Get("ShouldPlaySound", true);
+        private int _mapSize = Preferences.Get("MapSize", 4);
 
         public ICommand ChangeSettingCommand => _changeSettingCommand ?? (_changeSettingCommand = new Command(p =>
         {
+            if (Preferences.Get("ShouldPlaySound", true))
+                DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+
             switch (p.ToString())
             {
                 case "music":
@@ -24,6 +28,20 @@ namespace FifteenInRow
                     break;
                 case "sound":
                     IsSoundDisabled = !IsSoundDisabled;
+                    break;
+                case "decreaseMapSize":
+                    if (Preferences.Get("MapSize", 4) > 3)
+                    {
+                        Preferences.Set("MapSize", --_mapSize);
+                        OnPropertyChanged(nameof(MapSizeText));
+                    }
+                    break;
+                case "increaseMapSize":
+                    if (Preferences.Get("MapSize", 4) < 6)
+                    {
+                        Preferences.Set("MapSize", ++_mapSize);
+                        OnPropertyChanged(nameof(MapSizeText));
+                    }
                     break;
             }
         }));
@@ -58,6 +76,8 @@ namespace FifteenInRow
                 OnPropertyChanged();
             }
         }
+
+        public string MapSizeText => $"{_mapSize} X {_mapSize}";
 
         private void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

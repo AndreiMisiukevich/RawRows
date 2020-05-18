@@ -13,6 +13,7 @@ namespace FifteenInRow.Droid
 {
     [Activity(
         Theme = "@style/MainTheme",
+        ScreenOrientation = ScreenOrientation.Portrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

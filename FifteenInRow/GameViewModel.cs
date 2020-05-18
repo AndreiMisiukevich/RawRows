@@ -12,11 +12,9 @@ namespace FifteenInRow
 {
     public sealed class GameViewModel: INotifyPropertyChanged
     {
-        private const int MapSize = 4;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly int[] _winSequence = GetEmptyMap().Skip(1).ToArray();
+        private readonly int[] _winSequence = GetEmptyMap(Preferences.Get("MapSize", 4)).Skip(1).ToArray();
         private int[] _numbers;
         private ICommand _swapCommand;
         private ICommand _initGameCommand;
@@ -114,16 +112,18 @@ namespace FifteenInRow
 
         public ICommand InitGameCommand => _initGameCommand ?? (_initGameCommand = new Command(() =>
         {
-            Numbers = ShuffleArray(GetEmptyMap());
+            Numbers = ShuffleArray(GetEmptyMap(MapSize));
 #if DEBUG
-            Numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 };
+            //Numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 };
 #endif
             _emptyIndex = Numbers.IndexOf(0);
             SwapsCount = 0;
         }));
 
-        private static int[] GetEmptyMap()
-            => Enumerable.Range(0, MapSize * MapSize).ToArray();
+        private int MapSize { get; } = Preferences.Get("MapSize", 4);
+
+        private static int[] GetEmptyMap(int mapSize)
+            => Enumerable.Range(0, mapSize * mapSize).ToArray();
 
         private static TValue[] ShuffleArray<TValue>(TValue[] array)
         {

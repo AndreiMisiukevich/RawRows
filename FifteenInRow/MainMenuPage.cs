@@ -31,7 +31,7 @@ namespace FifteenInRow
                 {
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 50,
+                    FontSize = 40,
                     Text = "SETTINGS",
                     TextColor = Color.White,
                     FontFamily = "MandaloreRegular",
@@ -52,7 +52,7 @@ namespace FifteenInRow
                 {
                     HorizontalTextAlignment = TextAlignment.Center,
                     VerticalTextAlignment = TextAlignment.Center,
-                    FontSize = 50,
+                    FontSize = 40,
                     Text = "START GAME",
                     TextColor = Color.White,
                     FontFamily = "MandaloreRegular",
@@ -78,6 +78,7 @@ namespace FifteenInRow
                         new Label
                         {
                             HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
                             FontSize = 50,
                             Text = "FIFTEEN IN ROW",
                             TextColor = Color.White,
