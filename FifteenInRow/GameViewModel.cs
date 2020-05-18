@@ -186,9 +186,6 @@ namespace FifteenInRow
         public ICommand InitGameCommand => _initGameCommand ?? (_initGameCommand = new Command(() =>
         {
             Numbers = ShuffleArray(GetEmptyMap(MapSize));
-#if DEBUG
-            //Numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15 };
-#endif
             _emptyIndex = Numbers.IndexOf(0);
             SwapsCount = 0;
         }));
@@ -198,7 +195,7 @@ namespace FifteenInRow
         private static int[] GetEmptyMap(int mapSize)
             => Enumerable.Range(0, mapSize * mapSize).ToArray();
 
-        private static TValue[] ShuffleArray<TValue>(TValue[] array)
+        private static int[] ShuffleArray(int[] array)
         {
             var random = new Random();
             for (int i = 0; i < array.Length; ++i)
@@ -206,7 +203,35 @@ namespace FifteenInRow
                 var randomIndex = random.Next(0, array.Length - 1);
                 SwapElements(array, i, randomIndex);
             }
-            return array;
+            return CheckMapValid(array)
+                ? array
+                : ShuffleArray(array);
+        }
+
+        private static bool CheckMapValid(int[] array)
+        {
+            var n = 0;
+            var e = 0;
+            var mapSize = (int)Math.Sqrt(array.Length);
+            for (var i = 0; i < array.Length; ++i)
+            {
+                if (array[i] == 0)
+                {
+                    e = i / mapSize + 1;
+                }
+                if (i == 0)
+                {
+                    continue;
+                }
+                for (var j = i + 1; j < array.Length; ++j)
+                {
+                    if (array[j] < array[i])
+                    {
+                        ++n;
+                    }
+                }
+            }
+            return (n + e) % 2 == 0;
         }
 
         private static void SwapElements<TValue>(TValue[] array, int firstIndex, int secondIndex)
