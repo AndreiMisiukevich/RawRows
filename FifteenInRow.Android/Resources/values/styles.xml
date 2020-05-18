@@ -2,11 +2,9 @@
 <resources>
     <style name="MainTheme" parent="MainTheme.Base">
     </style>
-    <style name="SplashTheme" parent="MainTheme.Base">
-        <item name="android:background">@drawable/back</item>
-    </style>
     <!-- Base theme applied no matter what API -->
     <style name="MainTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/back</item>
         <!--If you are using revision 22.1 please use just windowNoTitle. Without android:-->
         <item name="windowNoTitle">true</item>
         <!--We will be using the toolbar so no need to show ActionBar-->

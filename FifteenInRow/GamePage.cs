@@ -27,7 +27,7 @@ namespace FifteenInRow
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Margin = new Thickness(Device.Idiom == TargetIdiom.Phone ? 15 : 125)
+                Margin = new Thickness(15)
             };
             gameMap.SetBinding(BindingContextProperty, nameof(GameViewModel.Numbers));
             gameMap.BindingContextChanged += OnGameMapBindingContextChanged;
@@ -103,9 +103,10 @@ namespace FifteenInRow
 
             var backImage = new Image
             {
+                IsVisible = Device.RuntimePlatform != Device.Android,
                 Opacity = 0.98,
                 Source = "back",
-                Aspect = Aspect.Fill
+                Aspect = Aspect.AspectFill
             };
             AbsoluteLayout.SetLayoutBounds(backImage, new Rectangle(0, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(backImage, AbsoluteLayoutFlags.All);
@@ -338,7 +339,9 @@ namespace FifteenInRow
             var gameMap = (AbsoluteLayout)sender;
             var deviceInfo = Device.Info;
             var infoSize = deviceInfo.PixelScreenSize;
-            var deviceWidth = Math.Min(infoSize.Width, infoSize.Height) / deviceInfo.ScalingFactor;
+            var minSize = Math.Min(infoSize.Width, infoSize.Height);
+            var halfMaxSize = Math.Max(infoSize.Width, infoSize.Height) / 2;
+            var deviceWidth = (minSize > halfMaxSize ? halfMaxSize : minSize) / deviceInfo.ScalingFactor;
             var mapWidth = deviceWidth - gameMap.Margin.HorizontalThickness;
             using (gameMap.Batch())
             {

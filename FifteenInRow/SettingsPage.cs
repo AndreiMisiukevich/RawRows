@@ -15,9 +15,10 @@ namespace FifteenInRow
 
             var backImage = new Image
             {
+                IsVisible = Device.RuntimePlatform != Device.Android,
                 Opacity = 0.98,
                 Source = "back",
-                Aspect = Aspect.Fill
+                Aspect = Aspect.AspectFill
             };
             AbsoluteLayout.SetLayoutBounds(backImage, new Rectangle(0, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(backImage, AbsoluteLayoutFlags.All);

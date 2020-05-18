@@ -21,7 +21,7 @@
 	<key>MinimumOSVersion</key>
 	<string>8.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>FifteenInRow</string>
+	<string>Raw Rows</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.test.FifteenInRow</string>
 	<key>CFBundleVersion</key>
@@ -29,7 +29,7 @@
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
-	<string>FifteenInRow</string>
+	<string>Raw Rows</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>UIStatusBarStyle</key>
