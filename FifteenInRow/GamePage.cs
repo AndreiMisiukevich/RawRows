@@ -450,6 +450,52 @@ namespace FifteenInRow
             TouchEff.SetPressedAnimationDuration(view, 400);
             TouchEff.SetPressedAnimationEasing(view, Easing.CubicInOut);
 
+            var upSwipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Up,
+                CommandParameter = value
+            };
+            upSwipeGesture.SetBinding(SwipeGestureRecognizer.CommandProperty, new Binding
+            {
+                Path = $"{nameof(BindingContext)}.{nameof(GameViewModel.SwipeUpCommand)}",
+                Source = this
+            });
+            var downSwipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Down,
+                CommandParameter = value
+            };
+            downSwipeGesture.SetBinding(SwipeGestureRecognizer.CommandProperty, new Binding
+            {
+                Path = $"{nameof(BindingContext)}.{nameof(GameViewModel.SwipeDownCommand)}",
+                Source = this
+            });
+            var leftSwipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Left,
+                CommandParameter = value
+            };
+            leftSwipeGesture.SetBinding(SwipeGestureRecognizer.CommandProperty, new Binding
+            {
+                Path = $"{nameof(BindingContext)}.{nameof(GameViewModel.SwipeLeftCommand)}",
+                Source = this
+            });
+            var rightSwipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Right,
+                CommandParameter = value
+            };
+            rightSwipeGesture.SetBinding(SwipeGestureRecognizer.CommandProperty, new Binding
+            {
+                Path = $"{nameof(BindingContext)}.{nameof(GameViewModel.SwipeRightCommand)}",
+                Source = this
+            });
+
+            view.GestureRecognizers.Add(upSwipeGesture);
+            view.GestureRecognizers.Add(downSwipeGesture);
+            view.GestureRecognizers.Add(leftSwipeGesture);
+            view.GestureRecognizers.Add(rightSwipeGesture);
+
             return view;
         }
     }

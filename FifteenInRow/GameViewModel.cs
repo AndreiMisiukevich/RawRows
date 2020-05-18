@@ -16,6 +16,10 @@ namespace FifteenInRow
 
         private readonly int[] _winSequence = GetEmptyMap(Preferences.Get("MapSize", 4)).Skip(1).ToArray();
         private int[] _numbers;
+        private ICommand _swipeUpCommand;
+        private ICommand _swipeDownCommand;
+        private ICommand _swipeLeftCommand;
+        private ICommand _swipeRightCommand;
         private ICommand _swapCommand;
         private ICommand _initGameCommand;
         private int _swapsCount;
@@ -47,6 +51,75 @@ namespace FifteenInRow
         public ICommand PerformTransitionCommand { get; set; }
 
         public ICommand HandleWinCommand { get; set; }
+
+        public ICommand SwipeUpCommand => _swipeUpCommand ?? (_swipeUpCommand = new Command(p =>
+        {
+            var value = (int)p;
+            var index = Numbers.IndexOf(value);
+
+            var currentRow = index / MapSize;
+            var currentCol = index % MapSize;
+
+            var emptyRow = _emptyIndex / MapSize;
+            var emptyCol = _emptyIndex % MapSize;
+
+            if(currentCol == emptyCol && currentRow > emptyRow)
+            {
+                SwapCommand.Execute(value);
+            }
+        }));
+
+        public ICommand SwipeDownCommand => _swipeDownCommand ?? (_swipeDownCommand = new Command(p =>
+        {
+            var value = (int)p;
+            var index = Numbers.IndexOf(value);
+
+            var currentRow = index / MapSize;
+            var currentCol = index % MapSize;
+
+            var emptyRow = _emptyIndex / MapSize;
+            var emptyCol = _emptyIndex % MapSize;
+
+            if (currentCol == emptyCol && currentRow < emptyRow)
+            {
+                SwapCommand.Execute(value);
+            }
+        }));
+
+        public ICommand SwipeLeftCommand => _swipeLeftCommand ?? (_swipeLeftCommand = new Command(p =>
+        {
+            var value = (int)p;
+            var index = Numbers.IndexOf(value);
+
+            var currentRow = index / MapSize;
+            var currentCol = index % MapSize;
+
+            var emptyRow = _emptyIndex / MapSize;
+            var emptyCol = _emptyIndex % MapSize;
+
+            if (currentRow == emptyRow && currentCol > emptyCol)
+            {
+                SwapCommand.Execute(value);
+            }
+
+        }));
+
+        public ICommand SwipeRightCommand => _swipeRightCommand ?? (_swipeRightCommand = new Command(p =>
+        {
+            var value = (int)p;
+            var index = Numbers.IndexOf(value);
+
+            var currentRow = index / MapSize;
+            var currentCol = index % MapSize;
+
+            var emptyRow = _emptyIndex / MapSize;
+            var emptyCol = _emptyIndex % MapSize;
+
+            if (currentRow == emptyRow && currentCol < emptyCol)
+            {
+                SwapCommand.Execute(value);
+            }
+        }));
 
         public ICommand SwapCommand => _swapCommand ?? (_swapCommand = new Command(p =>
         {
