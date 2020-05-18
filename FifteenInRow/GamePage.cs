@@ -27,7 +27,7 @@ namespace FifteenInRow
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Margin = new Thickness(15)
+                Margin = new Thickness(Device.Idiom == TargetIdiom.Phone ? 15 : 125)
             };
             gameMap.SetBinding(BindingContextProperty, nameof(GameViewModel.Numbers));
             gameMap.BindingContextChanged += OnGameMapBindingContextChanged;

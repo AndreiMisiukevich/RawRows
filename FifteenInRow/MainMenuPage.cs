@@ -65,9 +65,10 @@ namespace FifteenInRow
 
             var buttonsView = new PancakeView
             {
+                TranslationY = -37.5,
                 Opacity = 0,
-                Margin = new Thickness(25, 0),
-                Padding = new Thickness(25, 10, 25, 20),
+                Margin = new Thickness(Device.Idiom == TargetIdiom.Phone ? 15 : 125, 0),
+                Padding = new Thickness(25),
                 CornerRadius = new CornerRadius(50, 10, 10, 50),
                 BackgroundColor = Color.Black.MultiplyAlpha(.65),
                 Content = new StackLayout
