@@ -14,7 +14,7 @@ namespace FifteenInRow
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly int[] _winSequence = GetEmptyMap(Preferences.Get("MapSize", 4)).Skip(1).ToArray();
+        private readonly int[] _winSequence = GetEmptyMap(Preferences.Get("MapSize", 4));
         private int[] _numbers;
         private ICommand _swipeUpCommand;
         private ICommand _swipeDownCommand;
@@ -177,7 +177,7 @@ namespace FifteenInRow
             }
 
             ++SwapsCount;
-            if (Numbers.Take(Numbers.Length - 1).SequenceEqual(_winSequence))
+            if (Numbers.SequenceEqual(_winSequence))
             {
                 HandleWinCommand?.Execute(SwapsCount);
             }
@@ -193,45 +193,47 @@ namespace FifteenInRow
         private int MapSize { get; } = Preferences.Get("MapSize", 4);
 
         private static int[] GetEmptyMap(int mapSize)
-            => Enumerable.Range(0, mapSize * mapSize).ToArray();
+            => Enumerable.Range(1, mapSize * mapSize - 1).Union(Enumerable.Repeat(0, 1)).ToArray();
 
         private static int[] ShuffleArray(int[] array)
         {
-            var random = new Random();
-            for (int i = 0; i < array.Length; ++i)
-            {
-                var randomIndex = random.Next(0, array.Length - 1);
-                SwapElements(array, i, randomIndex);
-            }
-            return CheckMapValid(array)
-                ? array
-                : ShuffleArray(array);
-        }
-
-        private static bool CheckMapValid(int[] array)
-        {
-            var n = 0;
-            var e = 0;
             var mapSize = (int)Math.Sqrt(array.Length);
-            for (var i = 0; i < array.Length; ++i)
+            var random = new Random();
+
+            var allowedActions = new int[3];
+            allowedActions[0] = -1;
+            allowedActions[1] = -mapSize;
+            var allowedActionsCount = 2;
+            var emptyIndex = array.Length - 1;
+
+            for (var i = 0; i < 1300; ++i)
             {
-                if (array[i] == 0)
+                var randomAction = allowedActions[random.Next(allowedActionsCount)];
+                var newIndex = emptyIndex + randomAction;
+                SwapElements(array, emptyIndex, newIndex);
+                var newIndexRow = newIndex / mapSize;
+                var newIndexCol = newIndex % mapSize;
+                allowedActionsCount = 0;
+                if (newIndexCol > 0 && randomAction != -1)
                 {
-                    e = i / mapSize + 1;
+                    allowedActions[allowedActionsCount++] = -1;
                 }
-                if (i == 0)
+                if (newIndexCol < mapSize - 1 && randomAction != 1)
                 {
-                    continue;
+                    allowedActions[allowedActionsCount++] = 1;
                 }
-                for (var j = i + 1; j < array.Length; ++j)
+                if (newIndexRow > 0 && randomAction != -mapSize)
                 {
-                    if (array[j] < array[i])
-                    {
-                        ++n;
-                    }
+                    allowedActions[allowedActionsCount++] = -mapSize;
                 }
+                if (newIndexRow < mapSize - 1 && randomAction != mapSize)
+                {
+                    allowedActions[allowedActionsCount++] = mapSize;
+                }
+                emptyIndex = newIndex;
             }
-            return (n + e) % 2 == 0;
+
+            return array;
         }
 
         private static void SwapElements<TValue>(TValue[] array, int firstIndex, int secondIndex)
