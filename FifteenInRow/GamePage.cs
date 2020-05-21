@@ -339,9 +339,16 @@ namespace FifteenInRow
             var gameMap = (AbsoluteLayout)sender;
             var deviceInfo = Device.Info;
             var infoSize = deviceInfo.PixelScreenSize;
-            var minSize = Math.Min(infoSize.Width, infoSize.Height);
-            var halfMaxSize = Math.Max(infoSize.Width, infoSize.Height) / 2;
-            var deviceWidth = (minSize > halfMaxSize ? halfMaxSize : minSize) / deviceInfo.ScalingFactor;
+            var width = Width > 0
+                ? Width
+                : infoSize.Width / deviceInfo.ScalingFactor;
+            var height = Height > 0
+                ? Height
+                : infoSize.Height / deviceInfo.ScalingFactor;
+
+            var minSize = Math.Min(width, height);
+            var halfMaxSize = Math.Max(width, height) / 2;
+            var deviceWidth = minSize > halfMaxSize ? halfMaxSize : minSize;
             var mapWidth = deviceWidth - gameMap.Margin.HorizontalThickness;
             using (gameMap.Batch())
             {
