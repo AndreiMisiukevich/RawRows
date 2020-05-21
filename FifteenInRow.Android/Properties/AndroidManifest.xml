@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.sourcesoft.rawrows">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0.3" package="com.sourcesoft.rawrows" android:versionCode="10003">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
 	<application android:label="Raw Rows" android:icon="@mipmap/icon" android:roundIcon="@mipmap/icon_round"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
