@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FormsControls.Base;
@@ -34,6 +35,8 @@ namespace FifteenInRow
             AbsoluteLayout.SetLayoutBounds(gameMap, new Rectangle(.5, .5, -1, -1));
             AbsoluteLayout.SetLayoutFlags(gameMap, AbsoluteLayoutFlags.PositionProportional);
 
+            var isClosing = false;
+
             var mainMenuButton = new PancakeView
             {
                 BackgroundColor = Color.Black.MultiplyAlpha(.65),
@@ -55,12 +58,20 @@ namespace FifteenInRow
             };
             AbsoluteLayout.SetLayoutBounds(mainMenuButton, new Rectangle(0, 0, -1, -1));
             AbsoluteLayout.SetLayoutFlags(mainMenuButton, AbsoluteLayoutFlags.PositionProportional);
-            TouchEff.SetCommand(mainMenuButton, new Command(() =>
+            Task.Run(async () =>
             {
-                if (Preferences.Get("ShouldPlaySound", true))
-                    DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
-                Navigation.PopAsync();
-            }));
+                await Task.Delay(300);
+                TouchEff.SetCommand(mainMenuButton, new Command(() =>
+                {
+                    if (isClosing || Navigation.NavigationStack.OfType<GamePage>().Count() > 1) return;
+                    isClosing = true;
+                    if (Preferences.Get("ShouldPlaySound", true))
+                        DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
+                    Navigation.PopAsync();
+                }));
+            });
+
+
             TouchEff.SetNativeAnimation(mainMenuButton, true);
 
             var newGameButton = new PancakeView
@@ -89,6 +100,8 @@ namespace FifteenInRow
                 await Task.Delay(300);
                 TouchEff.SetCommand(newGameButton, new Command(async () =>
                 {
+                    if (isClosing) return;
+                    isClosing = true;
                     if (Preferences.Get("ShouldPlaySound", true))
                         DependencyService.Resolve<IAudioService>().Play("click.mp3", false);
                     await Navigation.PushAsync(new GamePage() { BindingContext = new GameViewModel() });
