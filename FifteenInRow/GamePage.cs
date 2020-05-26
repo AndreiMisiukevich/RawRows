@@ -284,7 +284,7 @@ namespace FifteenInRow
                             {
                                 HorizontalTextAlignment = TextAlignment.Center,
                                 FontSize = 50,
-                                Text = "CONGRATILATIONS!",
+                                Text = "CONGRATILATIONS",
                                 TextColor = Color.White,
                                 FontFamily = "MandaloreHalftone",
                             },
@@ -366,6 +366,8 @@ namespace FifteenInRow
             using (gameMap.Batch())
             {
                 gameMap.Children.Clear();
+                gameMap.MinimumWidthRequest = mapWidth;
+                gameMap.MinimumHeightRequest = mapWidth;
                 gameMap.WidthRequest = mapWidth;
                 gameMap.HeightRequest = mapWidth;
 
