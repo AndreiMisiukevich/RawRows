@@ -21,19 +21,22 @@ namespace FifteenInRow
         private int _mapSize;
         private double _itemSize;
         private PancakeView[] _items;
+        private AbsoluteLayout _gameMap;
+        private double _prevWidth;
+        private double _prevHeight;
 
         public GamePage()
         {
-            var gameMap = new AbsoluteLayout
+            _gameMap = new AbsoluteLayout
             {
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Margin = new Thickness(15)
             };
-            gameMap.SetBinding(BindingContextProperty, nameof(GameViewModel.Numbers));
-            gameMap.BindingContextChanged += OnGameMapBindingContextChanged;
-            AbsoluteLayout.SetLayoutBounds(gameMap, new Rectangle(.5, .5, -1, -1));
-            AbsoluteLayout.SetLayoutFlags(gameMap, AbsoluteLayoutFlags.PositionProportional);
+            _gameMap.SetBinding(BindingContextProperty, nameof(GameViewModel.Numbers));
+            _gameMap.BindingContextChanged += OnGameMapBindingContextChanged;
+            AbsoluteLayout.SetLayoutBounds(_gameMap, new Rectangle(.5, .5, -1, -1));
+            AbsoluteLayout.SetLayoutFlags(_gameMap, AbsoluteLayoutFlags.PositionProportional);
 
             var isClosing = false;
 
@@ -159,14 +162,14 @@ namespace FifteenInRow
             AbsoluteLayout.SetLayoutBounds(labelStack, new Rectangle(.5, .5, -1, -1));
             AbsoluteLayout.SetLayoutFlags(labelStack, AbsoluteLayoutFlags.PositionProportional);
 
-            gameMap.SizeChanged += (s, e) =>
+            _gameMap.SizeChanged += (s, e) =>
             {
                 using (blurFrame.Batch())
                 {
-                    blurFrame.WidthRequest = gameMap.Width;
-                    blurFrame.HeightRequest = gameMap.Height;
+                    blurFrame.WidthRequest = _gameMap.Width;
+                    blurFrame.HeightRequest = _gameMap.Height;
                 }
-                labelStack.TranslationY = -gameMap.Height / 2 - labelStack.Height / 2 - 20;
+                labelStack.TranslationY = -_gameMap.Height / 2 - labelStack.Height / 2 - 20;
             };
 
             Content = new AbsoluteLayout
@@ -178,7 +181,7 @@ namespace FifteenInRow
                     newGameButton,
                     labelStack,
                     blurFrame,
-                    gameMap
+                    _gameMap
                 }
             };
 
@@ -346,6 +349,17 @@ namespace FifteenInRow
         public void OnAnimationFinished(bool isPopAnimation) { }
 
         public void OnAnimationStarted(bool isPopAnimation) { }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _prevWidth && height != _prevHeight && width > 0 && height > 0)
+            {
+                _prevWidth = width;
+                _prevHeight = height;
+                OnGameMapBindingContextChanged(_gameMap, EventArgs.Empty);
+            }
+        }
 
         private void OnGameMapBindingContextChanged(object sender, EventArgs e)
         {
