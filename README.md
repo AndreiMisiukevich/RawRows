@@ -8,3 +8,10 @@ Download:
 - Google Play: https://play.google.com/store/apps/details?id=com.sourcesoft.rawrows&hl=en
 
 <image src="https://github.com/AndreiMisiukevich/RawRows/blob/master/sample.gif?raw=true" width="35%"/>
+
+Packages used:
+- Xamarin.Forms
+- Xamarin.Essentials
+- Xamarin.Forms.PancakeView
+- TouchView
+- XForms.Plugin.AnimationNavigationPage
