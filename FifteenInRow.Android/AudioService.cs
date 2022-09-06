@@ -21,10 +21,7 @@ namespace FifteenInRow.Droid
             player = new MediaPlayer { Looping = isLoop };
             player.SetDataSource(fd.FileDescriptor, fd.StartOffset, fd.Length);
             _players[resource] = player;
-            player.Prepared += (s, e) =>
-            {
-                player.Start();
-            };
+            player.Prepared += (s, e) => ((MediaPlayer)s).Start();
             player.Prepare();
         }
 
